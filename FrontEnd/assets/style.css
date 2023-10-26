@@ -49,14 +49,136 @@ table {
 /** end reset css**/
 body {
 	max-width: 1140px;
-	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	display: contents;
+	
 }
 header {
 	display: flex;
 	justify-content: space-between;
 	margin: 50px 0
+} 
+.desactiv {
+	display: none;
+}
+
+.activ {
+	display: flex;
+}
+.editor{
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+	color: white;
+	background-color: black;
+	height: 60px;
+	width: 100%;
+	cursor: pointer;
+}
+.modifier{
+	align-items: center;
+	margin: 10px 0 0 60px;
+	background-color:white;
+	border: none;
+	cursor: pointer;
+	}
+.modifier-portfolio{
+	justify-content: center;
+	align-items: baseline;
+	margin: 0;
+	background-color: white;
+	border: none;
+	cursor: pointer;
+}
+.modal-container{
+	display: none;
+	position: fixed;
+	width: 100%;
+	height:100%;
+	
+}
+.modal-container.active{
+	display: flex;
+}
+.overlay{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: #333333d3;
+}
+.modal{
+	width: 95%;
+	max-width: 700px;
+	min-width: 300px;
+	min-height: 300px;
+	background: white;
+	border-radius: 20px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	padding: 20px 100px 20px 100px;
+	overflow: auto;
+}
+.close-modal{
+	padding: 10px 10px;
+	border: none;
+	font-size: 26px;
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	cursor: pointer;
+	color: black;
+	background-color: white;
+}
+.poubelle{
+	padding: 8px 8px;
+	border-radius: 8px;
+		font-size: 17px;
+		position: relative;
+		top: 45px;
+		left: 90px;
+		cursor: pointer;
+		color: white;
+		background-color: black;
+}
+.gallery-modale {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-column-gap: 10px;
+	grid-row-gap: 20px;
+	border-bottom:solid #b3b3b3 1px;
+	padding-bottom: 50px;
+}
+
+.gallery-modale img {
+	width: 100%
+}
+.btn-vert{
+	font-size: 26px;
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: #1D6154;
+	margin:50px 20% 50px 20%;
+	border-radius: 60px;
+	padding: 10px 0 10px 0 ;
+	width: 60%;
+	cursor: pointer;
+}
+.modal-photo{
+	display: block;
+}
+.modal-photo.desactive{
+	display: none;
+}
+.ajout-photo{
+	display: none;
+}
+.ajout-photo.active {
+	display: block;
 }
 section {
 	margin: 50px 0
@@ -84,13 +206,31 @@ h2{
 	font-size: 30px;
 	color: #1D6154
 }
+h3{
+	font-family: 'Work Sans';
+	font-size: 16px;
+	padding:0 10px 0 10px;
+}
+h4{
+	font-family: 'Work Sans';
+		font-size: 14px;
+		padding: 0 10px 0 10px;
+	}
+h5{
+	font-family: 'Work Sans';
+	font-size: 26px;
+	margin: 20px;
+	display: flex;
+	justify-content: center;
+	padding: 30px;
+}
 nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
 
 }
-nav li {
+  nav li  ,a {
 	padding: 0 10px;
 	font-size: 1.2em;
 }
@@ -123,13 +263,29 @@ li:hover {
 }
 #portfolio h2 {
 	text-align: center;
-	margin-bottom: 1em;
+	margin: 0 10px 1em 0;
+}
+#projet{
+	display: flex;
+	justify-content: center;
+	align-items: baseline;
+	margin: 0;
 }
 .filtre{
 	text-align: center;
 	margin-bottom: 2em;
 }
-.border{
+.bull{
+	font-family: 'Syne';
+	font-weight: 700;
+	color: black;
+	background-color: white;
+	margin: 5px;
+	padding: 4px 10px;
+	text-align: center;
+	border-radius: 60px;
+}
+.dots{
 	font-family: 'Syne';
 	font-weight: 700;
 	color: #1D6154;
@@ -139,7 +295,7 @@ li:hover {
 	text-align: center;
 	border-radius: 60px;
 }
-.border_selection{
+.dot_selection{
 	color: white;
 	background-color: #1D6154;
 }
@@ -159,35 +315,45 @@ li:hover {
 	width: 50%;
 margin: auto;
 }
-#contact > * {
+#login{
+	width: 35%;
+		margin: auto auto 20em auto;
+}
+#message-erreur {
+	margin: 5em 0 0 0;
+	text-align: center;
+}
+#contact > * ,#login > *{
 	text-align: center;
 
 }
-#contact h2{
+#contact h2,#login h2{
 	margin-bottom: 20px;
 }
-#contact form {
+#contact form,#login form{
 	text-align: left;
 	margin-top:30px;
 	display: flex;
 	flex-direction: column;
 }
 
-#contact input {
+#contact input ,#login input{
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-#contact label {
+#contact label ,#login label{
 	margin: 2em 0 1em 0;
 }
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-
-input[type="submit"]{
+#login a{
+	text-align: center;
+}
+#login button, input[type="submit"]{
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
