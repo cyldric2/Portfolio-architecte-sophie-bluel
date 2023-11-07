@@ -19,19 +19,33 @@
 		<div class="overlay modal-trigger">
 		</div>
 		<div class="modal">
-			<button class=" ">
-			
-			</button>
+			<button class="close-modal modal-trigger ">x</button>
 			<div class="modal-photo">
 				<h5>Galerie photo</h5>
 				<div class="gallery-modale" id="gal-mod">
 				</div>
 				<button class="btn-vert" id="btn-photo">Ajouter une photo</button>
 			</div>
-			<div class="ajout-photo">
-				<button class="retour">X</button>
+			<div class="modal2">
+				<button class="retour fa-solid fa-arrow-left btn-retour"></button>
 				<h5>Ajout photo</h5>
-				<button class="btn-vert"> valider</button>
+				<div class="ajout-photo-forme" >
+					<img  id ="resultat">
+						<label for="file-input" class="font-bleu" id="ajout-image">
+							<span class="fa-regular fa-image taille-icone"></span>
+							<span class="btn-gris">+ Ajouter photo</span>
+							<span>jpg, png : 4mo max</span>
+							</label>
+						<input type="file" id="file-input">
+					<h4>Titre</h4>
+					<input class="rectangle" type="text" accept="image/png, image/jpeg" />
+					<h4>Catégorie</h4>
+					<select name="categorie" class="rectangle modal-filtre"  id="modal-filtre">
+						<option value="">Choisir la categories</option>
+					</select>
+					<p class="erreur" id="erreur"></p>
+				</div>
+				<button class="btn-gris"> valider</button>
 			</div>
 		</div>
 	</div>

@@ -26,12 +26,13 @@ fetchWorks()
 
 //creation categories filtre de travaux//
 let filtre = document.getElementById("filtre")
-function creatCategories(name,id) {
+let filtreModal = document.getElementById("modal-filtre")
+function creatCategories(name, id) {
     const categories = `<button class=" dots " id=${id}>${name}</button>`
-   filtre.innerHTML += categories
-    
+    filtre.innerHTML += categories
+    const categoriesModale = `<option id=${id} value="${name}">${name}</option>`
+   filtreModal.innerHTML += categoriesModale
 }
-
 function dot_selected(categories,index) {
 	for (let i of categories) {
 		i.classList.remove("dot_selection")	
@@ -66,7 +67,7 @@ const fetchCategories= async () => {
         .then((promise) => {
             let data = promise
           for (let item of data) {
-                creatCategories(item.name,item.id)
+              creatCategories(item.name, item.id)
             }
             categoriesEvent()
         })
@@ -108,20 +109,63 @@ logout.addEventListener("click", () => {
 //fenêtre modale//
 const modalContainer = document.querySelector(".modal-container")
 const modalTrigger = document.querySelectorAll(".modal-trigger")
-//enclencher trigger//
+const btnPhoto =document.getElementById("btn-photo")
+const modalPhoto = document.querySelector(".modal-photo")
+const modal2 = document.querySelector(".modal2")
+const fileInput = document.getElementById("file-input")
+const erreur = document.getElementById("erreur")
+const btnRetour = document.querySelector(".btn-retour")
+
+//enclencher=trigger//
 modalTrigger.forEach(trigger => trigger.addEventListener("click", toggleModal))
 function toggleModal() {
     modalContainer.classList.toggle("active")
     imageModale()
-//modale 2ieme page ajout photo//
-const btnPhoto =document.getElementById("btn-photo")
-const modalPhoto = document.querySelector(".modal-photo")
-const ajoutPhoto = document.querySelector(".ajout-photo")
-btnPhoto.addEventListener("click", () => {
-    console.log(btnPhoto);
-    modalPhoto.classList.toggle("desactive")
-    ajoutPhoto.classList.toggle("active")
-} )
+    //modale 2ieme page ajout photo//
+    btnPhoto.addEventListener("click", () => {
+        modalPhoto.classList.toggle("desactive")
+        modal2.classList.toggle("active")
+    })
+    //désactiver modale 2 flèche retour//
+    btnRetour.addEventListener("click", () => {
+        modalPhoto.classList.remove("desactive")
+        modal2.classList.remove("active")
+    })
+    //insérer image modale 2//
+    fileInput.addEventListener("change", ()=> {
+        file = fileInput.files
+        afficheImg()
+       /* if (file.length === 1) {
+            console.log(file);
+            let fileReader = new FileReader()
+            fileReader.onload=function(event) {
+                document
+                    .getElementById("resultat")
+                    .setAttribute("scr", event.target.result);
+            }
+            console.log(fileReader);
+            fileReader.readAsDataUrl(file[0])
+        }
+        else {console.log(file);
+            console.log(fileInput);
+            erreur.innerHTML="Erreur fichier image"
+        }*/
+    })
+    //supprimer image//
+    const btnSup = document.querySelectorAll(".poubelle")
+    btnSup.forEach(btn => {
+        btn.addEventListener("click", () => {
+            id = btn.getAttribute("data-id")
+            console.log(id); 
+            deletePost()
+        })
+    })  
+    //ajouter image après téléchargement modal2//
+    const ajoutImag = document.getElementById("ajout-image")
+    function téléchargement(params) {
+        
+    }
+    
 }
    
    
@@ -130,32 +174,52 @@ btnPhoto.addEventListener("click", () => {
 function imageModale() {
     let galModale = document.getElementById("gal-mod")
     let i = data.length
-    galModale.innerHTML=""
+    galModale.innerHTML = ""
     for (let i = 0; i < data.length; i++) {
         image = data[i].imageUrl
         title = data[i].title
-        id= data[i].id
-     const works = `<figure id="${id}">
-                    <i class="fa-solid fa-trash-can poubelle"id="btn-sup ${id}"></i>
+        id = data[i].id
+        const works = `<figure id="${id}">
+                    <i class="fa-solid fa-trash-can poubelle"id="btn-sup " data-id="${id}"></i>
 		            <img src="${image}" alt="${title}">
 	                </figure>`
         galModale.innerHTML += works
     }
-
 }
-/*supprimer image//
-const btnSup = document.querySelectorAll(".poubelle")
-console.log(btnSup);
-btnSup.addEventListener("click", () => {
-    id=document.querySelectorAll(".poubelle").onclick = function() {
-    // element
-    var elt = this;
-    // id de l'element
-    var idElt = this.getAttribute('id');
-    };
+
+//fonction supprimer image//  
+function deletePost() {
     console.log(id);
-    //récupéré les donner api//
-    fetch("http://localhost:5678/api/delete/works", {
+    fetch("http://localhost:5678/api/works/${id}", {
         method: "DELETE",
-    })
-})*/
+        headers: {
+            'Content-Type': 'application/json'
+    
+        }
+    }) 
+      .then(response => {
+            if (response.status === 200) {
+                return response.json()
+                 console.log(reponse.json());
+            } else {
+                console.log(reponse.json());
+                return
+            }
+        })
+}
+
+function afficheImg(){
+    let resultat = document.querySelector("#resultat")
+    if (file.length === 1) {
+        console.log(file);
+        let fileReader = new FileReader()
+        console.log(fileReader);
+        fileReader.onload = function (event) {
+            document
+                .getElementById("resultat")
+                .setAttribute("scr", event.target.result);
+        }
+        console.log(fileReader);
+        fileReader.readAsDataUrl(file[0])
+    }
+}
