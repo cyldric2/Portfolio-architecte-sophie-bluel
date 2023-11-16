@@ -114,7 +114,10 @@ const modalPhoto = document.querySelector(".modal-photo")
 const modal2 = document.querySelector(".modal2")
 const fileInput = document.getElementById("file-input")
 const erreur = document.getElementById("erreur")
+const btnValider = document.getElementById("btn-valider-modal2")
 const btnRetour = document.querySelector(".btn-retour")
+const erreurModal = document.getElementById("erreur-modal")
+const sup= document.querySelector(".sup")
 
 //enclencher=trigger//
 modalTrigger.forEach(trigger => trigger.addEventListener("click", toggleModal))
@@ -133,42 +136,18 @@ function toggleModal() {
     })
     //insérer image modale 2//
     fileInput.addEventListener("change", ()=> {
-        file = fileInput.files
+        file = fileInput.files[0]
         afficheImg()
-       /* if (file.length === 1) {
-            console.log(file);
-            let fileReader = new FileReader()
-            fileReader.onload=function(event) {
-                document
-                    .getElementById("resultat")
-                    .setAttribute("scr", event.target.result);
-            }
-            console.log(fileReader);
-            fileReader.readAsDataUrl(file[0])
-        }
-        else {console.log(file);
-            console.log(fileInput);
-            erreur.innerHTML="Erreur fichier image"
-        }*/
+        sup.classList.toggle("desactive")
+         sup.classList.remove("active")
     })
-    //supprimer image//
-    const btnSup = document.querySelectorAll(".poubelle")
-    btnSup.forEach(btn => {
-        btn.addEventListener("click", () => {
-            id = btn.getAttribute("data-id")
-            console.log(id); 
-            deletePost()
-        })
-    })  
-    //ajouter image après téléchargement modal2//
-    const ajoutImag = document.getElementById("ajout-image")
-    function téléchargement(params) {
-        
-    }
     
+    //ajouter image après téléchargement modal2//
+  
+    modal2Form.addEventListener("submit",enregistrerImag )
 }
-   
-   
+
+ 
 
 //image modale//
 function imageModale() {
@@ -180,46 +159,93 @@ function imageModale() {
         title = data[i].title
         id = data[i].id
         const works = `<figure id="${id}">
-                    <i class="fa-solid fa-trash-can poubelle"id="btn-sup " data-id="${id}"></i>
+                    <i class="fa-solid fa-trash-can poubelle"id="btn-sup " data-id="${id}" onClick="deletePost(${id})"></i>
 		            <img src="${image}" alt="${title}">
 	                </figure>`
         galModale.innerHTML += works
+
     }
 }
-
-//fonction supprimer image//  
-function deletePost() {
-    console.log(id);
-    fetch("http://localhost:5678/api/works/${id}", {
+function imageGalerie() {
+    let gal = document.getElementById("gal")
+    gal.innerHTML=""
+     for (let item of data) {
+                creatWorks(item.imageUrl, item.title)
+            }
+}
+//fonction supprimer image activer dans fonction image modale const works//  
+function deletePost(id) {
+    let token = window.localStorage.getItem("token") 
+    fetch(`http://localhost:5678/api/works/${id}`, {
         method: "DELETE",
         headers: {
-            'Content-Type': 'application/json'
-    
+            'Authorization': `Bearer ${token}`
         }
     }) 
-      .then(response => {
-            if (response.status === 200) {
-                return response.json()
-                 console.log(reponse.json());
+        .then(response => {
+          console.log(response.status);
+            if (response.status === 204) {
+                data = data.filter(element => element.id != id)
+                imageModale()
+                imageGalerie()
             } else {
-                console.log(reponse.json());
-                return
+                erreurModal.innerHTML="Erreur"
             }
         })
 }
 
 function afficheImg(){
     let resultat = document.querySelector("#resultat")
-    if (file.length === 1) {
-        console.log(file);
+    if (file !=null) {
         let fileReader = new FileReader()
-        console.log(fileReader);
-        fileReader.onload = function (event) {
-            document
-                .getElementById("resultat")
-                .setAttribute("scr", event.target.result);
-        }
-        console.log(fileReader);
-        fileReader.readAsDataUrl(file[0])
+        fileReader.readAsDataURL(file)
+        fileReader.addEventListener("load", () => {
+            resultat.setAttribute("src", fileReader.result)
+        })
     }
+     else {erreur.innerHTML="Erreur fichier image"
+        }
 }
+ 
+//ajouter image après téléchargement modal2//
+let imagValue= fileInput.value
+let titreValue = titre.value
+let categorieValue = filtreModal.value
+const modal2Form=document.getElementById("modal2-form")
+function enregistrerImag(e) {
+    e.preventDefault()
+    const formData = new FormData(modal2Form)
+    const image = formData.get("file-input")
+    const titre = formData.get("titre")
+    const categorie = formData.get("categorie")
+    console.log("categorie", categorie);
+    formData.append("image", image)
+    formData.append("title", titre)
+    formData.append("category", categorie)
+    console.log(formData.get("image"));
+    console.log(formData.get("title"));
+    console.log(formData.get("category"));
+
+    let token = window.localStorage.getItem("token") 
+    if (image !=null,titre!=null,categorie!="categorie") {
+        fetch("http://localhost:5678/api/works/", {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+            //verification //
+        .then(response => {
+            if (response.status === 201) {
+                erreur.innerHTML = "Envoyer";
+                return response.json()
+            } else {
+                erreur.innerHTML = "Erreur";
+                return
+            }
+        })
+    }
+ }
