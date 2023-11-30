@@ -191,7 +191,6 @@ header {
 	border-radius: 60px;
 	padding: 10px 0 10px 0;
 	width: 60%;
-	cursor: pointer;
 	text-align: center;
 	margin: 10px;
 } 
@@ -207,6 +206,16 @@ header {
 	padding: 10px;
 	margin-bottom: 10px;
 }
+.imag{
+height: 100px;
+width: 75px;
+object-fit: cover;
+}
+.image {
+	height: 400px;
+	width: 300px;
+	object-fit: cover;
+}
 .modal-photo{
 	display: flex;
 	flex-direction: column;
@@ -219,6 +228,8 @@ header {
 	padding: 10px 0 10px 0;
 }
 .ajout-photo-forme{
+	display: flex;
+	flex-direction: column;
 	border-bottom:solid #a7a7a7;
 	margin-bottom: 30px;
 	padding-bottom: 20px;

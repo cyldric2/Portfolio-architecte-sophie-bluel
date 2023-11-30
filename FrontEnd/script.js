@@ -5,7 +5,7 @@ let data = []
 
 function creatWorks(imageUrl, title) {
     const works = `<figure>
-				<img src="${imageUrl}" alt="${title}">
+				<img class="image" src="${imageUrl}" alt="${title}">
 				<figcaption>${title}</figcaption>
 			</figure>`
     gallery.innerHTML += works
@@ -30,7 +30,7 @@ let filtreModal = document.getElementById("modal-filtre")
 function creatCategories(name, id) {
     const categories = `<button class=" dots " id=${id}>${name}</button>`
     filtre.innerHTML += categories
-    const categoriesModale = `<option id=${id} value="${name}">${name}</option>`
+    const categoriesModale = `<option id=${id} value="${id}">${name}</option>`
    filtreModal.innerHTML += categoriesModale
 }
 function dot_selected(categories,index) {
@@ -118,7 +118,7 @@ const btnValider = document.getElementById("btn-valider-modal2")
 const btnRetour = document.querySelector(".btn-retour")
 const erreurModal = document.getElementById("erreur-modal")
 const sup= document.querySelector(".sup")
-
+const modal2Form=document.getElementById("modal2-form")
 //enclencher=trigger//
 modalTrigger.forEach(trigger => trigger.addEventListener("click", toggleModal))
 function toggleModal() {
@@ -135,19 +135,26 @@ function toggleModal() {
         modal2.classList.remove("active")
     })
     //insérer image modale 2//
-    fileInput.addEventListener("change", ()=> {
+    fileInput.addEventListener("change", () => {
         file = fileInput.files[0]
-        afficheImg()
-        sup.classList.toggle("desactive")
-         sup.classList.remove("active")
+        //fichier max 4mo
+        var fileLimit = 100;
+        let files = fileInput.files; 
+        let fileSize = files[0].size; 
+        let fileSizeInKB = (fileSize / 4000);
+        if(fileSizeInKB < fileLimit){
+            afficheImg()  
+             verifFormulaire()
+            sup.classList.toggle("desactive")
+            sup.classList.remove("active")
+            erreur.innerHTML= " "
+        } else {
+            erreur.innerHTML= "votre fichier fait plus de 4 mo "
+        }
     })
-    
-    //ajouter image après téléchargement modal2//
-  
-    modal2Form.addEventListener("submit",enregistrerImag )
+    modal2Form.addEventListener("submit", enregistrerImag)
 }
 
- 
 
 //image modale//
 function imageModale() {
@@ -160,7 +167,7 @@ function imageModale() {
         id = data[i].id
         const works = `<figure id="${id}">
                     <i class="fa-solid fa-trash-can poubelle"id="btn-sup " data-id="${id}" onClick="deletePost(${id})"></i>
-		            <img src="${image}" alt="${title}">
+		            <img  class="imag" src="${image}" alt="${title}">
 	                </figure>`
         galModale.innerHTML += works
 
@@ -193,9 +200,8 @@ function deletePost(id) {
             }
         })
 }
-
+  let resultat = document.querySelector("#resultat")
 function afficheImg(){
-    let resultat = document.querySelector("#resultat")
     if (file !=null) {
         let fileReader = new FileReader()
         fileReader.readAsDataURL(file)
@@ -208,44 +214,66 @@ function afficheImg(){
 }
  
 //ajouter image après téléchargement modal2//
-let imagValue= fileInput.value
-let titreValue = titre.value
-let categorieValue = filtreModal.value
-const modal2Form=document.getElementById("modal2-form")
+
+const titre = document.getElementById("titre")
+const categorie = document.getElementById("modal-filtre")
+    
+titre.addEventListener("change", verifFormulaire)
+categorie.addEventListener("change", verifFormulaire)
+
+function verifFormulaire() {
+    const image = document.getElementById("file-input").files[0]
+    console.log(image);
+        console.log(titre.value);
+    if (image != undefined && titre.value != null && categorie.value > 0) {
+        btnValider.classList.remove("btn-gris")
+        btnValider.classList.add("btn-vert")
+    } else {
+        btnValider.classList.add("btn-gris")
+        btnValider.classList.remove("btn-vert")
+    }
+
+}
 function enregistrerImag(e) {
     e.preventDefault()
-    const formData = new FormData(modal2Form)
-    const image = formData.get("file-input")
-    const titre = formData.get("titre")
-    const categorie = formData.get("categorie")
-    console.log("categorie", categorie);
+     const image = document.getElementById("file-input").files[0]
+    const titre = document.getElementById("titre").value
+    const categorie = document.getElementById("modal-filtre").value
+ 
+       
+    const formData = new FormData()
     formData.append("image", image)
     formData.append("title", titre)
     formData.append("category", categorie)
-    console.log(formData.get("image"));
-    console.log(formData.get("title"));
-    console.log(formData.get("category"));
 
-    let token = window.localStorage.getItem("token") 
-    if (image !=null,titre!=null,categorie!="categorie") {
-        fetch("http://localhost:5678/api/works/", {
+    let token = window.localStorage.getItem("token")
+    if (image != undefined && titre != null && categorie > 0) {
+            erreur.innerHTML = "";
+        fetch("http://localhost:5678/api/works", {
             method: "POST",
             headers: {
-                'Authorization': `Bearer ${token}`,
-                accept: "application/json",
-                "Content-Type": "application/json"
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(formData)
+            body: formData
         })
             //verification //
-        .then(response => {
-            if (response.status === 201) {
-                erreur.innerHTML = "Envoyer";
-                return response.json()
-            } else {
-                erreur.innerHTML = "Erreur";
-                return
-            }
-        })
-    }
+            .then(response => {
+                if (response.status === 201) {
+                    erreur.innerHTML = "Envoyer";
+                    modal2Form.reset()
+                    sup.classList.toggle("active")
+                    sup.classList.remove("desactive")
+                    resultat.setAttribute("src","")
+
+                    return response.json()
+                } else {
+                    
+                    return
+                }
+            })
+    } else {
+            erreur.innerHTML = "Veuillez remplir tous les champs";
+    } 
+
+      
  }
