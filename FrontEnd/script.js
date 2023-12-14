@@ -27,6 +27,7 @@ fetchWorks()
 //creation categories filtre de travaux//
 let filtre = document.getElementById("filtre")
 let filtreModal = document.getElementById("modal-filtre")
+
 function creatCategories(name, id) {
     const categories = `<button class=" dots " id=${id}>${name}</button>`
     filtre.innerHTML += categories
@@ -128,11 +129,17 @@ function toggleModal() {
     btnPhoto.addEventListener("click", () => {
         modalPhoto.classList.toggle("desactive")
         modal2.classList.toggle("active")
+        erreur.innerHTML= " "
     })
     //désactiver modale 2 flèche retour//
     btnRetour.addEventListener("click", () => {
         modalPhoto.classList.remove("desactive")
         modal2.classList.remove("active")
+        modal2Form.reset()
+        sup.classList.toggle("active")
+        sup.classList.remove("desactive")
+        resultat.setAttribute("src", "")
+        imageModale()
     })
     //insérer image modale 2//
     fileInput.addEventListener("change", () => {
@@ -259,6 +266,8 @@ function enregistrerImag(e) {
             //verification //
             .then(response => {
                 if (response.status === 201) {
+                     gallery.innerHTML= ""
+                    fetchWorks()
                     erreur.innerHTML = "Envoyer";
                     modal2Form.reset()
                     sup.classList.toggle("active")

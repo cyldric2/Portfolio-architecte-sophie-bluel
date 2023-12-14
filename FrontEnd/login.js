@@ -4,7 +4,6 @@ let d2 = document.getElementById("d2");
 function editor() {
     if (getComputedStyle(d1).display != "none") {
         d1.style.display = "none";
-        console.log(d1.style.display);
     }
 }
             

@@ -198,6 +198,7 @@ header {
 	font-size: 76px;
 }
 .font-bleu{
+	max-width: 420px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -205,6 +206,10 @@ header {
 	color: #a7a7a7;
 	padding: 10px;
 	margin-bottom: 10px;
+}
+.resultat{
+	max-width: 420px;
+	max-height: 170px;
 }
 .imag{
 height: 100px;
